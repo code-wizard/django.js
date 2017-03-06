@@ -90,6 +90,7 @@ class ContextSerializer(object):
         '''
         # Default to unauthenticated anonymous user
         data['user'] = {
+            'id':'',
             'username': '',
             'is_authenticated': False,
             'is_staff': False,
@@ -99,6 +100,8 @@ class ContextSerializer(object):
         if 'django.contrib.sessions.middleware.SessionMiddleware' in settings.MIDDLEWARE_CLASSES:
             user = self.request.user
             data['user']['is_authenticated'] = user.is_authenticated()
+             if hasattr(user,"id"):
+                data['user']['id']=user.id
             if hasattr(user, 'username'):
                 data['user']['username'] = user.username
             elif hasattr(user, 'get_username'):

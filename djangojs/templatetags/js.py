@@ -2,7 +2,7 @@
 '''
 Provide template tags to help with Javascript/Django integration.
 '''
-from __future__ import unicode_literals
+
 
 import django
 from distutils.version import StrictVersion
@@ -97,7 +97,7 @@ class VerbatimNode(template.Node):
         output = ""
         # If its text we concatenate it, otherwise it's a node and we render it
         for bit in self.text_and_nodes:
-            if isinstance(bit, basestring):
+            if isinstance(bit, str):
                 output += bit
             else:
                 output += bit.render(context)
@@ -121,15 +121,15 @@ def javascript(filename, type='text/javascript'):
     '''A simple shortcut to render a ``script`` tag to a static javascript file'''
     if '?' in filename and len(filename.split('?')) is 2:
         filename, params = filename.split('?')
-        return make_safe('<script type="%s" src="%s?%s"></script>' % (type, staticfiles_storage.url(filename), params))
+        return '<script type="%s" src="%s?%s"></script>' % (type, staticfiles_storage.url(filename), params)
     else:
-        return make_safe('<script type="%s" src="%s"></script>' % (type, staticfiles_storage.url(filename)))
+        return '<script type="%s" src="%s"></script>' % (type, staticfiles_storage.url(filename))
 
 
 @register.simple_tag
 def js(filename, type='text/javascript'):
     '''A simple shortcut to render a ``script`` tag to a static javascript file'''
-    return javascript(filename, type=type)
+    return mark_safe(javascript(filename, type=type))
 
 
 @register.simple_tag
@@ -147,7 +147,7 @@ def coffee(filename):
 @register.simple_tag
 def css(filename):
     '''A simple shortcut to render a ``link`` tag to a static CSS file'''
-    return make_safe('<link rel="stylesheet" type="text/css" href="%s" />' % staticfiles_storage.url(filename))
+    return '<link rel="stylesheet" type="text/css" href="%s" />' % staticfiles_storage.url(filename)
 
 
 def _boolean(value):
